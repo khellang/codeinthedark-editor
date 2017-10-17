@@ -28,7 +28,7 @@ function frameContent (documentSrc, username) {
   const usernames = Object.keys(users);
   const index = usernames.indexOf(username);
   const nextIndex = (index + 1) % usernames.length;
-  const nextUsername = usernames[nextIndex];
+  const nextUsername = usernames[nextIndex] || username;
   const containerMarkup = `
   <html>
     <head>
