@@ -20,6 +20,7 @@ config =
     app: "app"
     tmp: ".tmp"
     dist: "dist"
+    monitor: "monitor"
     scripts: "app/scripts"
     styles: "app/styles"
     assets: "app/assets"
@@ -93,7 +94,6 @@ gulp
       .src path.join(config.paths.assets, "**")
       .pipe gulp.dest("#{config.paths.tmp}/assets")
 
-
     instructions = gulp
       .src path.join(config.paths.app, "index.html")
       .pipe gulp.dest(config.paths.tmp)
@@ -104,6 +104,15 @@ gulp
     gulp
       .src path.join(config.paths.assets, "{instructions.html,page.png,result.html,monitor-config.js}")
       .pipe gulp.dest(path.join config.paths.dist, "assets")
+
+  .task "copy-monitor-files", ->
+    gulp
+      .src path.join(config.paths.assets, "**")
+      .pipe gulp.dest(path.join config.paths.monitor, "assets")
+
+    gulp
+      .src path.join(config.paths.dist, "**")
+      .pipe gulp.dest(path.join config.paths.monitor, "app")
 
   .task "webpack-dev-server", (done) ->
     server = new WebpackDevServer webpackers.development,
@@ -135,6 +144,6 @@ gulp
       .pipe gulp.dest("#{config.paths.dist}")
 
   .task "dist", ->
-    runSequence "copy-assets", "build", "inline", "copy-page-files"
+    runSequence "copy-assets", "build", "inline", "copy-page-files", "copy-monitor-files"
 
   .task "default", ["serve"]

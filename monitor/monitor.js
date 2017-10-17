@@ -1,10 +1,13 @@
 const fs = require('fs');
 const http = require('http');
 const cors = require('cors');
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
+app.use('/assets', express.static(path.join(__dirname, 'app/assets')))
+app.use('/monitor/assets', express.static(path.join(__dirname, 'assets')))
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.text());
@@ -28,7 +31,7 @@ function frameContent (documentSrc, username) {
       <style>
         @font-face {
           font-family: "Press Start 2P";
-          src: url(/assets/PressStart2P-Regular.ttf) format("truetype");
+          src: url(/monitor/assets/fonts/PressStart2P-Regular.ttf) format("truetype");
         }
       
         * {
@@ -89,6 +92,11 @@ function frameContent (documentSrc, username) {
 }
 
 router.route('/')
+  .get((req, res) => {
+    res.sendFile(path.join(__dirname, 'app/editor.html'))
+  })
+
+router.route('/monitor')
 
   .get((req, res) => {
     let markup = `
@@ -111,19 +119,7 @@ router.route('/')
   })
 ;
 
-router.route('/assets/:filename')
-  .get((req, res) => {
-    let file = null;
-    try {
-      file = fs.readFileSync(`assets/${req.params.filename}`);
-      res.send(file);
-    } catch (e) {
-      res.status(404).send('File not found');
-    }
-  })
-;
-
-router.route('/:username')
+router.route('/monitor/:username')
   .get((req, res) => {
     const markup = users[req.params.username] ?
       users[req.params.username] :

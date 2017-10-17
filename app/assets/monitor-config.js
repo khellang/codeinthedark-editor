@@ -1,1 +1,1 @@
-var citdMonitorEndpoint = "http://localhost:1337/"
+var citdMonitorEndpoint = "http://localhost:1337/monitor/"
