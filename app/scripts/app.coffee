@@ -261,8 +261,8 @@ class App
     # seem necessary
     if window.citdMonitorEndpoint
       $.post('http://localhost:1337/' + localStorage["name"], {
-          markup: @editor.getValue()
-        })
+        markup: @editor.getValue()
+      })
 
   onChange: (e) =>
     @debouncedSaveContent()
