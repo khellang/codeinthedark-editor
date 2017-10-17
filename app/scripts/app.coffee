@@ -260,7 +260,7 @@ class App
     # You might need to throttle this call, but for now it doesn't
     # seem necessary
     if window.citdMonitorEndpoint
-      $.post('http://localhost:1337/' + localStorage["name"], {
+      $.post(window.citdMonitorEndpoint + localStorage["name"], {
         markup: @editor.getValue()
       })
 
