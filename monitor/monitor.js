@@ -14,8 +14,14 @@ const router = express.Router();
 
 const users = {};
 
+function fixedEncodeURIComponent(str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+    return '%' + c.charCodeAt(0).toString(16);
+  });
+}
+
 function frameContent (documentSrc, username) {
-  const encodedSrc = encodeURIComponent(documentSrc);
+  const encodedSrc = fixedEncodeURIComponent(documentSrc);
   const containerMarkup = `
   <html>
     <head>
