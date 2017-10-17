@@ -25,6 +25,10 @@ function fixedEncodeURIComponent(str) {
 
 function frameContent (documentSrc, username) {
   const encodedSrc = fixedEncodeURIComponent(documentSrc);
+  const usernames = Object.keys(users);
+  const index = usernames.indexOf(username);
+  const nextIndex = (index + 1) % usernames.length;
+  const nextUsername = usernames[nextIndex];
   const containerMarkup = `
   <html>
     <head>
@@ -46,27 +50,31 @@ function frameContent (documentSrc, username) {
           color: white;
           display: flex;
           flex-direction: column;
+          background: black;
+          margin: 30px;
         }
         
-        h1 {
-          background-color: #3a9364;
-          text-align: center;
-          margin: 0 auto;
-          padding: 8px 25px;
-          font-size: 40px;
+        .name-tag {
+          position: absolute;
+          z-index: 40;
+          bottom: 20px;
+          left: 20px;
+          padding: 20px;
+          background: rgba(58,147,100,.75);
+          color: white;
+          font-size: 56px;
         }
         
         iframe {
           border-style: none;
           background-color: white;
           flex: 1;
-          margin: 0 30px 30px;
         }
       </style>
     </head>
     
     <body>
-      <h1>${username}</h1>
+      <span class="name-tag">${username}</span>
       <script src="/socket.io/socket.io.js"></script>
       <script>
         var iframe = document.createElement('iframe');
@@ -83,6 +91,8 @@ function frameContent (documentSrc, username) {
           iframe.contentWindow.document.write(markupEvent.markup);
           iframe.contentWindow.document.close();
         });
+
+        setTimeout(() => location.assign('/monitor/${nextUsername}'), 30000);
       </script>    
     </body>
   </html>
@@ -102,17 +112,75 @@ router.route('/monitor')
     let markup = `
     <html>
       <head>
+        <script src="/socket.io/socket.io.js"></script>
         <style>
+          @font-face {
+            font-family: "Press Start 2P";
+            src: url(/monitor/assets/fonts/PressStart2P-Regular.ttf) format("truetype");
+          }
+        
+          * {
+            margin: 0;
+            padding: 0;
+          }
+
+          body {
+            font-family: "Press Start 2P", sans-serif;
+            height: 100vh;
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            background: black;
+            margin: 30px;
+            align-items: center;
+          }
+
+          a {
+            color: inherit;
+            text-decoration: none;
+            line-height: 2.5em;
+            display: block;
+          }
+
+          ul {
+            list-style: none;
+            width: 50%;
+            text-align: center;
+            z-index: 10;
+          }
+
+          li {
+            background: rgb(58,147,100);
+            color: white;
+            font-size: 56px;
+            margin: 10px;
+          }
         </style>
       </head>
-      
       <body>
+        <ul id="users">
     `;
     Object.keys(users).forEach((userName) => {
-      markup += `<a href='/${userName}'>${userName}</a>`;
+      markup += `<li><a href='/monitor/${userName}'>${userName}</a></li>`;
     });
     markup += `
+        </ul>
       </body>
+      <script>
+      var socket = io('/');
+      var element = document.getElementById('users');
+      socket.on('newuser', function (userEvent) {
+        var a = document.createElement('a');
+        const username = userEvent.username;
+        var text = document.createTextNode(username);
+        a.appendChild(text);
+        a.href = '/monitor/' + username;
+        var li = document.createElement('li');
+        li.appendChild(a);
+        element.appendChild(li);
+      });
+      </script>
     </html>
     `;
     res.send(markup);
@@ -121,7 +189,7 @@ router.route('/monitor')
 
 router.route('/monitor/:username')
   .get((req, res) => {
-    const markup = users[req.params.username] ?
+    const markup = users[req.params.username] !== undefined ?
       users[req.params.username] :
       '<body style="display: flex;justify-content: center;align-items: center;font-family: sans-serif;"><h1>Waiting for contestant...</h1></body>';
     io.of(`/${req.params.username}`); // Force socket.io to initialize the namespace
@@ -130,6 +198,9 @@ router.route('/monitor/:username')
   })
 
   .post((req, res) => {
+    if (users[req.params.username] === undefined) {
+      io.of('/').emit('newuser', {username: req.params.username});
+    }
     users[req.params.username] = req.body.markup;
     io.of(`/${req.params.username}`).emit('newmarkup', {markup: req.body.markup});
     res.send();
