@@ -1,1 +1,1 @@
-var citdMonitorEndpoint = "http://localhost:1337/monitor/"
+var citdMonitorEndpoint = (location.origin || 'http://localhost:1337') + '/monitor/';
