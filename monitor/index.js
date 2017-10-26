@@ -191,7 +191,24 @@ router.route('/monitor/:username')
   .get((req, res) => {
     const markup = users[req.params.username] !== undefined ?
       users[req.params.username] :
-      '<body style="display: flex;justify-content: center;align-items: center;font-family: sans-serif;"><h1>Waiting for contestant...</h1></body>';
+      `<style>
+        @font-face {
+          font-family: "Press Start 2P";
+          src: url(/monitor/assets/fonts/PressStart2P-Regular.ttf) format("truetype");
+        }
+        
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-family: "Press Start 2P";
+          background: black;
+          color: rgb(58,147,100);
+        }
+      </style>
+      <body>
+        <h1>Waiting for contestant...</h1>
+      </body>`;
     io.of(`/${req.params.username}`); // Force socket.io to initialize the namespace
 
     res.send(frameContent(markup, req.params.username));
