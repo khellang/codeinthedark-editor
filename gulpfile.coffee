@@ -102,7 +102,7 @@ gulp
 
   .task "copy-page-files", ->
     gulp
-      .src path.join(config.paths.assets, "{instructions.html,result.html,monitor-config.js,fonts/*.*,images/page.png,images/red.png,images/cover.png,images/miles.png,images/heart.png}")
+      .src path.join(config.paths.assets, "{instructions.html,result.html,monitor-config.js,fonts/*.*,images/page.png,images/albums.png,images/background.png,images/spotify.png}")
       .pipe gulp.dest(path.join config.paths.dist, "assets")
 
   .task "copy-monitor-files", ->
