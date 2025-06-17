@@ -26,3 +26,11 @@ This will compile all scripts and styles and inline them into a single html file
 
 ## Contributing
 Contributions to the editor welcome. If you've fixed a bug or implemented a cool new feature that you would like to share, please feel free to open a pull request here.
+
+## Sponsors
+
+[Entity Framework Extensions](https://entityframework-extensions.net/?utm_source=khellang&utm_medium=codeinthedark-editor) and [Dapper Plus](https://dapper-plus.net/?utm_source=khellang&utm_medium=codeinthedark-editor) are major sponsors and proud to contribute to the development of codeinthedark-editor.
+
+[![Entity Framework Extensions](https://raw.githubusercontent.com/khellang/khellang/refs/heads/master/.github/entity-framework-extensions-sponsor.png)](https://entityframework-extensions.net/bulk-insert?utm_source=khellang&utm_medium=codeinthedark-editor)
+
+[![Dapper Plus](https://raw.githubusercontent.com/khellang/khellang/refs/heads/master/.github/dapper-plus-sponsor.png)](https://dapper-plus.net/bulk-insert?utm_source=khellang&utm_medium=codeinthedark-editor)
